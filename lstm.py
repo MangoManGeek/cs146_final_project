@@ -8,7 +8,7 @@ from BertEmbedder import *
 
 
 class LSTMLM(nn.Module):
-    def __init__(self, vocab_size, rnn_size, embedding_size):
+    def __init__(self, vocab_size, rnn_size):
         """
         The Model class implements the LSTM-LM model.
         Feel free to initialize any variables that you find necessary in the
@@ -27,6 +27,7 @@ class LSTMLM(nn.Module):
 
         # TODO: initialize embeddings, LSTM, and linear layers
         self.embeddings = BertEmbedder()
+        self.embedding_size = self.embeddings.hidden_size
         self.lstm = torch.nn.LSTM(input_size=self.embedding_size,
                                 hidden_size = self.hidden_size,
                                 num_layers = self.num_layers,
@@ -38,7 +39,7 @@ class LSTMLM(nn.Module):
         #self.hidden_in = torch.randn(self.num_layers, self.batch_size, self.hidden_size)
         #self.cell_in = torch.randn(self.num_layers, self.batch_size, self.hidden_size)
 
-    def forward(self, inputs, lengths):
+    def forward(self, input_ids, attention_mask):
 
         """
         Runs the forward pass of the model.
@@ -52,17 +53,17 @@ class LSTMLM(nn.Module):
         # make sure you use pack_padded_sequence and pad_padded_sequence to
         # reduce calculation
 
-        in_embeddings = self.embeddings(inputs) # batch * window * embeddings
-        packed_embeddings = torch.nn.utils.rnn.pack_padded_sequence(input = in_embeddings, 
-                                                                    lengths = lengths, 
-                                                                    batch_first = True,
-                                                                    enforce_sorted=False)
-        #self.hidden_in = torch.randn(self.num_layers, self.batch_size, self.hidden_size)
-        #self.cell_in = torch.randn(self.num_layers, self.batch_size, self.hidden_size)
+        in_embeddings = self.embeddings(input_ids, attention_mask) # batch * window * embeddings
+        # packed_embeddings = torch.nn.utils.rnn.pack_padded_sequence(input = in_embeddings, 
+        #                                                             lengths = lengths, 
+        #                                                             batch_first = True,
+        #                                                             enforce_sorted=False)
+        packed_embeddings = in_embeddings
         lstm_out, (hn, cn) = self.lstm(input = packed_embeddings)       # lstm_out shape: batch * seq_length * embedding
-        unpacked_lstm_out, lens_unpacked = torch.nn.utils.rnn.pad_packed_sequence(sequence = lstm_out, 
-                                                                                    batch_first = True,
-                                                                                    total_length=inputs.shape[1])
+        # unpacked_lstm_out, lens_unpacked = torch.nn.utils.rnn.pad_packed_sequence(sequence = lstm_out, 
+        #                                                                             batch_first = True,
+        #                                                                             total_length=inputs.shape[1])
+        unpacked_lstm_out = lstm_out
         #print(lens_unpacked.shape, "lengths")
         logits = self.linear(unpacked_lstm_out)
         return logits     # batch * window * vocab

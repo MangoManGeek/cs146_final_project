@@ -10,6 +10,7 @@ class BertEmbedder(nn.Module):
         self.hidden_size = 768
         self.model = BertModel.from_pretrained('bert-base-uncased')
 
-    def forward(self, inputs):
-        outputs = model(**inputs)
+    def forward(self, input_ids, attention_mask):
+        # inputs --> returned from tokenizer()
+        outputs = self.model(input_ids = input_ids, attention_mask = attention_mask)
         return outputs.last_hidden_state
