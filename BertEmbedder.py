@@ -12,6 +12,6 @@ class BertEmbedder(nn.Module):
 
     def forward(self, inputs):
         # inputs --> input text batch * window
-        temp = tokenizer(inputs, padding = 'max_length', truncation = True, max_length = 50, return_tensors="pt")
+        temp = tokenizer(inputs, padding = 'longest', truncation = True, max_length = 50, return_tensors="pt")
         outputs = self.model(**temp)
         return outputs.last_hidden_state
