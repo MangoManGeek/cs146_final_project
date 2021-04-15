@@ -8,7 +8,7 @@ from BertEmbedder import *
 
 
 class LSTMLM(nn.Module):
-    def __init__(self, vocab_size, rnn_size):
+    def __init__(self, embedder_type, rnn_size, num_layers = 3):
         """
         The Model class implements the LSTM-LM model.
         Feel free to initialize any variables that you find necessary in the
@@ -19,15 +19,21 @@ class LSTMLM(nn.Module):
         """
         super().__init__()
         # TODO: initialize the vocab_size, rnn_size, embedding_size
-        self.vocab_size = vocab_size
+        # self.vocab_size = vocab_size
         self.hidden_size = rnn_size
         # self.embedding_size = embedding_size
         self.num_layers = 3
         self.dropout_rate = 0.3
 
         # TODO: initialize embeddings, LSTM, and linear layers
-        self.embeddings = BertEmbedder()
+        if embedder_type == 'bert':
+        	self.embeddings = BertEmbedder()
+        else:
+        	self.embeddings = Elmo_Embedding_layer()
+
         self.embedding_size = self.embeddings.hidden_size
+        self.vocab_size = self.embeddings.vocab_size
+
         self.lstm = torch.nn.LSTM(input_size=self.embedding_size,
                                 hidden_size = self.hidden_size,
                                 num_layers = self.num_layers,
@@ -39,11 +45,11 @@ class LSTMLM(nn.Module):
         #self.hidden_in = torch.randn(self.num_layers, self.batch_size, self.hidden_size)
         #self.cell_in = torch.randn(self.num_layers, self.batch_size, self.hidden_size)
 
-    def forward(self, input_ids, attention_mask):
+    def forward(self, inputs):
 
         """
         Runs the forward pass of the model.
-        :param inputs: word ids (tokens) of shape (batch_size, window_size)
+        :param inputs: word texts (tokens) of shape (batch_size, window_size)
         :param lengths: array of actual lengths (no padding) of each input
         :return: the logits, a tensor of shape
                  (batch_size, window_size, vocab_size)
@@ -53,7 +59,7 @@ class LSTMLM(nn.Module):
         # make sure you use pack_padded_sequence and pad_padded_sequence to
         # reduce calculation
 
-        in_embeddings = self.embeddings(input_ids, attention_mask) # batch * window * embeddings
+        in_embeddings = self.embeddings(inputs) # batch * window * embeddings
         # packed_embeddings = torch.nn.utils.rnn.pack_padded_sequence(input = in_embeddings, 
         #                                                             lengths = lengths, 
         #                                                             batch_first = True,
