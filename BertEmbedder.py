@@ -10,7 +10,8 @@ class BertEmbedder(nn.Module):
         self.hidden_size = 768
         self.model = BertModel.from_pretrained('bert-base-uncased')
 
-    def forward(self, input_ids, attention_mask):
-        # inputs --> returned from tokenizer()
-        outputs = self.model(input_ids = input_ids, attention_mask = attention_mask)
+    def forward(self, inputs):
+        # inputs --> input text batch * window
+        temp = tokenizer(inputs, padding = 'max_length', truncation = True, max_length = 50, return_tensors="pt")
+        outputs = self.model(**temp)
         return outputs.last_hidden_state
