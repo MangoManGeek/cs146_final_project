@@ -11,6 +11,7 @@ class BertEmbedder(nn.Module):
         self.model = BertModel.from_pretrained('bert-base-uncased')
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
         self.vocab_size = self.tokenizer.vocab_size
+        print("vocab_size: ", self.vocab_size)
 
     def forward(self, inputs):
         # inputs --> input text batch * window

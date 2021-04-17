@@ -5,10 +5,11 @@ from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 import torch
 
 from BertEmbedder import *
+from Elmo_embedding import *
 
 
 class LSTMLM(nn.Module):
-    def __init__(self, embedder_type, rnn_size, num_layers = 3):
+    def __init__(self, embedder_type, rnn_size, vocab_size, num_layers = 3):
         """
         The Model class implements the LSTM-LM model.
         Feel free to initialize any variables that you find necessary in the
@@ -32,7 +33,7 @@ class LSTMLM(nn.Module):
         	self.embeddings = Elmo_Embedding_layer()
 
         self.embedding_size = self.embeddings.hidden_size
-        self.vocab_size = self.embeddings.vocab_size
+        self.vocab_size = vocab_size
 
         self.lstm = torch.nn.LSTM(input_size=self.embedding_size,
                                 hidden_size = self.hidden_size,
@@ -65,6 +66,7 @@ class LSTMLM(nn.Module):
         #                                                             batch_first = True,
         #                                                             enforce_sorted=False)
         packed_embeddings = in_embeddings
+        # print(packed_embeddings)
         lstm_out, (hn, cn) = self.lstm(input = packed_embeddings)       # lstm_out shape: batch * seq_length * embedding
         # unpacked_lstm_out, lens_unpacked = torch.nn.utils.rnn.pad_packed_sequence(sequence = lstm_out, 
         #                                                                             batch_first = True,
