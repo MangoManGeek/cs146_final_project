@@ -14,7 +14,7 @@ from AGNewsDataset import *
 # TODO: Set hyperparameters
 hyperparams = {
     "rnn_size": 500,  # assuming encoder and decoder use the same rnn_size
-    "num_epochs": 1,
+    "num_epochs": 3,
     "batch_size": 20,
     "learning_rate": 0.001,
     "window_size": 50
@@ -70,8 +70,8 @@ def test(model, test_loader, experiment, hyperparams):
     total_correct = 0
     total_words = 0
 
-    # precision = Precision(average=False, is_multilabel=True)# , device = device)
-    # recall = Recall(average=False, is_multilabel=True)# , device = device)
+    precision = Precision(average=False, is_multilabel=True)# , device = device)
+    recall = Recall(average=False, is_multilabel=True)# , device = device)
 
     model = model.eval()
     with experiment.test():
@@ -97,9 +97,11 @@ def test(model, test_loader, experiment, hyperparams):
                 total_correct += batch_correct
                 total_words += batch_words
 
-                # predicted_ids = torch.argmax(prbs, dim=2)
-                # precision.update((predicted_ids, labels))
-                # recall.update((predicted_ids, labels))
+                predicted_ids = torch.argmax(prbs, dim=2)
+                y_pred_one_hot = F.one_hot(predicted_ids.to(torch.int64), num_classes=prbs.shape[-1])
+                labels_one_hot = F.one_hot(labels.to(torch.int64), num_classes=prbs.shape[-1])
+                precision.update((torch.transpose(y_pred_one_hot, 1, 2), torch.transpose(labels_one_hot, 1, 2)))
+                recall.update((torch.transpose(y_pred_one_hot, 1, 2), torch.transpose(labels_one_hot, 1, 2)))
 
         perplexity = torch.exp(total_loss / total_words)
         accuracy = total_correct / total_words
@@ -107,8 +109,10 @@ def test(model, test_loader, experiment, hyperparams):
         perplexity = perplexity.item()
         # accuracy = accuracy.cpu()
 
-        # F1 = (precision * recall * 2 / (precision + recall)).mean()
-        # print(F1)
+        
+        F1 = (precision * recall * 2 / (precision + recall)).mean().compute().item()
+        print("F1: ", F1)
+        experiment.log_metric("F1", F1)
 
         print("total_correct: ", total_correct)
         print("total_words: ", total_words)
