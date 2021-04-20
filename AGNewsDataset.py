@@ -18,7 +18,7 @@ def tokenize(tokenizer, s, model_type, window_size):
         return rv
 
 class AGNewsDataset(Dataset):
-    def __init__(self, model_type, dataset_type, window_size, vocab_dict = None):
+    def __init__(self, model_type, dataset_type, window_size, vocab_dict = None, data_percentage = 1.0):
         self.lm_inputs = []
         self.lm_labels = []
         self.inputs = []
@@ -58,7 +58,10 @@ class AGNewsDataset(Dataset):
         #     self.inputs.append(tokenizer(self.dataset[idx]['text'].strip().split()))
         #     self.labels.append(self.dataset[idx]['label'])
         t = 0
+        stop_idx = len(self.dataset) * data_percentage
         for idx in tqdm(range(len(self.dataset))):
+            if idx >= stop_idx:
+                break
             self.lm_inputs.append(
                 tokenize(tokenizer, 'start ' + self.dataset[idx]['text'], model_type, window_size))
             if model_type == 'bert':

@@ -19,6 +19,7 @@ hyperparams = {
     "num_epochs": 3,
     "batch_size": 20,
     "learning_rate": 1e-4,
+    "data_percentage": 0.01,
     "window_size": 50
 }
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -180,9 +181,9 @@ if __name__ == "__main__":
 
     # training_dataset = AGNewsDataset(embedder_type, 'train', hyperparams['window_size'])
     vocab_dict = dict()
-    training_dataset = AGNewsDataset(embedder_type, 'train', hyperparams['window_size'], vocab_dict = vocab_dict)
+    training_dataset = AGNewsDataset(embedder_type, 'train', hyperparams['window_size'], vocab_dict = vocab_dict, data_percentage = hyperparams["data_percentage"])
     vocab_dict = training_dataset.vocab_dict
-    testing_dataset = AGNewsDataset(embedder_type, 'test', hyperparams['window_size'], vocab_dict = vocab_dict)
+    testing_dataset = AGNewsDataset(embedder_type, 'test', hyperparams['window_size'], vocab_dict = vocab_dict, data_percentage = hyperparams["data_percentage"])
     vocab_dict = testing_dataset.vocab_dict
     vocab_size = testing_dataset.vocab_size
     print("final vocab size: ", vocab_size)
