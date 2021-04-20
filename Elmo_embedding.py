@@ -12,7 +12,8 @@ class Elmo_Embedding_layer(nn.Module):
         
         self.elmo = Elmo(options_file, weight_file, 1, dropout=0, requires_grad = True)
 
-        self.hidden_size = 1024
+        # self.hidden_size = 1024
+        self.hidden_size = 256
 
         self.vocab_size = 30522
         
