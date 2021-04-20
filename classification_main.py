@@ -173,6 +173,8 @@ if __name__ == "__main__":
                         help="run testing loop")
     parser.add_argument("--transformer", action="store_true",
                         help="using transformer")
+    parser.add_argument("--linear", action="store_true",
+                        help="using linear classifier")
     args = parser.parse_args()
 
     # TODO: Make sure you modify the `.comet.config` file
@@ -223,6 +225,12 @@ if __name__ == "__main__":
             training_dataset.num_classes,
             hyperparams['head'],
             hyperparams['num_layers']
+        ).to(device)
+    else if args.linear:
+        model = Linear_Classifier(
+            embedder_type,
+            hyperparams['window_size'],
+            training_dataset.num_classes,
         ).to(device)
     else:
         model = LSTM_Classifier(

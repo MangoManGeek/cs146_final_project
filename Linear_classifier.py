@@ -8,7 +8,7 @@ from BertEmbedder import *
 from Elmo_embedding import *
 
 
-class Transformer_Classifier(nn.Module):
+class Linear_Classifier(nn.Module):
     def __init__(self, embedder_type, window_size, num_classes):
         """
         The Model class implements the LSTM-LM model.
