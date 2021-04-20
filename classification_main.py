@@ -182,9 +182,9 @@ if __name__ == "__main__":
 
     # training_dataset = AGNewsDataset(embedder_type, 'train', hyperparams['window_size'])
     vocab_dict = dict()
-    training_dataset = AGNewsDataset(embedder_type, 'train', hyperparams['window_size'], vocab_dict = vocab_dict, data_percentage = hyperparams["data_percentage"])
+    training_dataset = AGNewsDataset(embedder_type, 'train', hyperparams['window_size'], vocab_dict = vocab_dict, data_percentage = hyperparams["data_percentage"], , dataset_name = hyperparams["dataset_name"])
     vocab_dict = training_dataset.vocab_dict
-    testing_dataset = AGNewsDataset(embedder_type, 'test', hyperparams['window_size'], vocab_dict = vocab_dict, data_percentage = hyperparams["data_percentage"])
+    testing_dataset = AGNewsDataset(embedder_type, 'test', hyperparams['window_size'], vocab_dict = vocab_dict, data_percentage = hyperparams["data_percentage"], , dataset_name = hyperparams["dataset_name"])
     vocab_dict = testing_dataset.vocab_dict
     vocab_size = testing_dataset.vocab_size
     print("final vocab size: ", vocab_size)
