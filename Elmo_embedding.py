@@ -21,8 +21,8 @@ class Elmo_Embedding_layer(nn.Module):
         # Input sentences : batch_size, max sentence length, max word length(50)
         # Output: (batch_size, max sentence length, embedding_dim(1024)
         # return self.elmo(batch_to_ids(sentences))["elmo_representations"]
-        rv = self.elmo(sentences)["elmo_representations"]
-        rv = torch.stack(rv)[0]
+        rv = self.elmo(sentences)["elmo_representations"][0]
+        # rv = torch.stack(rv)[0]
         # print(rv.shape)
         return rv
     

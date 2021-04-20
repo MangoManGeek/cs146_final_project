@@ -11,7 +11,7 @@ def tokenize(tokenizer, s, model_type, window_size):
         return tokenizer(s, padding = 'max_length', truncation = True, max_length = window_size)['input_ids']
         # , return_tensors="pt"
     else:
-        x = batch_to_ids(s)[0]
+        x = batch_to_ids([s.split()])[0]
         x = x[:window_size]
         padding = np.zeros([window_size - x.shape[0], 50])
         rv = np.concatenate([x, padding], axis=0)
