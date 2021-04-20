@@ -73,9 +73,9 @@ class AGNewsDataset(Dataset):
                 self.lm_labels.append(label_ids)
             self.inputs.append(tokenize(tokenizer, self.dataset[idx]['text'], model_type, window_size))
             self.labels.append(self.dataset[idx]['label'])
-            if t == 100:
-                break
-            t += 1
+#            if t == 100:
+#                break
+#            t += 1
         # print(type(self.lm_inputs))
         if model_type == 'bert':
             self.lm_inputs = torch.tensor(self.lm_inputs)

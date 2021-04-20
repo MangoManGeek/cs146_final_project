@@ -7,7 +7,7 @@ import numpy as np
 import argparse
 from tqdm import tqdm  # optional progress bar
 from ignite.metrics import Precision, Recall
-
+from transformerLM import *
 from lstm import *
 from AGNewsDataset import *
 
@@ -17,7 +17,10 @@ hyperparams = {
     "num_epochs": 3,
     "batch_size": 20,
     "learning_rate": 1e-5,
-    "window_size": 50
+    "window_size": 50,
+    "d_model": 512,
+    "head": 4,
+    "num_layers":2
 }
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("training on: ", device)
@@ -153,6 +156,8 @@ if __name__ == "__main__":
                         help="run training loop")
     parser.add_argument("-t", "--test", action="store_true",
                         help="run testing loop")
+    parser.add_argument("--transformer", action="store_true",
+                        help="using transformer")
     args = parser.parse_args()
 
     # TODO: Make sure you modify the `.comet.config` file
@@ -196,13 +201,22 @@ if __name__ == "__main__":
     #     start += batch_size
 
     # embedder_type = 'bert' if args.bert else 'elmo'
+    if args.transformer:
+        model = TransformerLM(
+            embedder_type,
+            hyperparams['window_size'],
+            hyperparams['head'],
+            hyperparams['num_layers'],
+            vocab_size
+        ).to(device)
+    else:
+        model = LSTMLM(
+            embedder_type,
+            hyperparams["rnn_size"],
+            vocab_size
+        ).to(device)
 
-    model = LSTMLM(
-        embedder_type,
-        hyperparams["rnn_size"],
-        vocab_size
-    ).to(device)
-
+    
     if args.load:
         print("loading saved model...")
         model.load_state_dict(torch.load('./model.pt'))

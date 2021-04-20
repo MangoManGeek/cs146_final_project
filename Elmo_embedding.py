@@ -1,5 +1,7 @@
 from allennlp.modules.elmo import Elmo, batch_to_ids
+from allennlp.modules.seq2vec_encoders import Seq2VecEncoder
 from torch import nn
+import numpy as np
 import torch
 class Elmo_Embedding_layer(nn.Module):
     def __init__(self):
@@ -23,6 +25,25 @@ class Elmo_Embedding_layer(nn.Module):
         # print(rv.shape)
         return rv
     
-#elmo = Elmo_Embedding_layer()
-#sentences = [['First', 'sentence', 'is', 'over', '.'], ['Another', 'test','.']]
-#print(elmo(sentences))
+elmo = Elmo_Embedding_layer()
+sentences = [['First', 'word', 'is', 'good', '.'], ['First', 'word', 'is', 'awesome', '.']]
+sentences_comp = [['First', 'bad', 'thing', 'is', 'love'], ['First', 'bad', 'thing', 'is', 'hate']]
+result = elmo.elmo(batch_to_ids(sentences))["elmo_representations"]
+result_comp = elmo.elmo(batch_to_ids(sentences_comp))["elmo_representations"][0]
+test = result_comp.clone().detach().sum(dim=1)
+print(test)
+print(test.shape)
+#t = result[0].detach().numpy()
+#t0, t1 = t[0].flatten(), t[1].flatten()
+#t = result_comp[0].detach().numpy()
+#t2, t3 = t[0].flatten(), t[1].flatten()
+#ls = [t0, t1, t2, t3]
+#res = np.zeros((4,4))
+#for i, x in enumerate(ls):
+#    for j, y in enumerate(ls):
+#        res[i,j] = np.sqrt(np.sum((x-y)**2))
+#print(res)
+
+# should be fine here
+
+    
