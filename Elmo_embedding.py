@@ -8,7 +8,7 @@ class Elmo_Embedding_layer(nn.Module):
         
         weight_file = "https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5"
         
-        self.elmo = Elmo(options_file, weight_file, 1, dropout=0)
+        self.elmo = Elmo(options_file, weight_file, 1, dropout=0, requires_grad = True)
 
         self.hidden_size = 1024
 
