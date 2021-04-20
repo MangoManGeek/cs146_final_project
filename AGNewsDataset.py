@@ -18,7 +18,7 @@ def tokenize(tokenizer, s, model_type, window_size):
         return rv
 
 class AGNewsDataset(Dataset):
-    def __init__(self, model_type, dataset_type, window_size, vocab_dict = None, data_percentage =0.1):
+    def __init__(self, model_type, dataset_type, window_size, vocab_dict = None, data_percentage =0.5):
         self.lm_inputs = []
         self.lm_labels = []
         self.inputs = []

@@ -17,13 +17,13 @@ from AGNewsDataset import *
 hyperparams = {
     "task_type": "classification",
     "rnn_size": 256,  # assuming encoder and decoder use the same rnn_size
-    "num_epochs": 3,
+    "num_epochs": 1,
     "batch_size": 20,
     "learning_rate": 1e-5,
     "window_size": 100,
     "d_model": 256,
     "head": 4,
-    "num_layers":2
+    "num_layers":1
 }
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("training on: ", device)
@@ -188,9 +188,9 @@ if __name__ == "__main__":
 
     # training_dataset = AGNewsDataset(embedder_type, 'train', hyperparams['window_size'])
     vocab_dict = dict()
-    training_dataset = AGNewsDataset(embedder_type, 'train', hyperparams['window_size'], vocab_dict = vocab_dict)
+    training_dataset = AGNewsDataset(embedder_type, 'train', hyperparams['window_size'], vocab_dict = vocab_dict, data_percentage=0.5)
     vocab_dict = training_dataset.vocab_dict
-    testing_dataset = AGNewsDataset(embedder_type, 'test', hyperparams['window_size'], vocab_dict = vocab_dict)
+    testing_dataset = AGNewsDataset(embedder_type, 'test', hyperparams['window_size'], vocab_dict = vocab_dict, data_percentage=1.0)
     vocab_dict = testing_dataset.vocab_dict
     vocab_size = testing_dataset.vocab_size
     print("final vocab size: ", vocab_size)
