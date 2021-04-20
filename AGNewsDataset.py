@@ -18,7 +18,7 @@ def tokenize(tokenizer, s, model_type, window_size):
         return rv
 
 class AGNewsDataset(Dataset):
-    def __init__(self, model_type, dataset_type, window_size, vocab_dict = None, data_percentage = 1.0):
+    def __init__(self, model_type, dataset_type, window_size, vocab_dict = None, data_percentage = 1.0, dataset_name = "ag_news"):
         self.lm_inputs = []
         self.lm_labels = []
         self.inputs = []
@@ -33,7 +33,7 @@ class AGNewsDataset(Dataset):
         else:
             tokenizer = batch_to_ids
 
-        self.dataset = load_dataset('ag_news', split=dataset_type)
+        self.dataset = load_dataset(dataset_name, split=dataset_type)
         self.num_classes = self.dataset.info.features['label'].num_classes
 
         if model_type != 'bert':
