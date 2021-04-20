@@ -9,6 +9,7 @@ from tqdm import tqdm  # optional progress bar
 from ignite.metrics import Precision, Recall
 from sklearn.metrics import f1_score
 from transformer_classifier import *
+from Linear_classifier import *
 from lstm_classifier import *
 from AGNewsDataset import *
 
@@ -18,8 +19,8 @@ hyperparams = {
     "rnn_size": 256,  # assuming encoder and decoder use the same rnn_size
     "num_epochs": 3,
     "batch_size": 20,
-    "learning_rate": 1e-4,
-    "window_size": 50,
+    "learning_rate": 1e-5,
+    "window_size": 100,
     "d_model": 256,
     "head": 4,
     "num_layers":2
@@ -226,7 +227,7 @@ if __name__ == "__main__":
             hyperparams['head'],
             hyperparams['num_layers']
         ).to(device)
-    else if args.linear:
+    elif args.linear:
         model = Linear_Classifier(
             embedder_type,
             hyperparams['window_size'],

@@ -11,14 +11,14 @@ def tokenize(tokenizer, s, model_type, window_size):
         return tokenizer(s, padding = 'max_length', truncation = True, max_length = window_size)['input_ids']
         # , return_tensors="pt"
     else:
-        x = batch_to_ids(s)[0]
+        x = batch_to_ids([s.split()])[0]
         x = x[:window_size]
         padding = np.zeros([window_size - x.shape[0], 50])
         rv = np.concatenate([x, padding], axis=0)
         return rv
 
 class AGNewsDataset(Dataset):
-    def __init__(self, model_type, dataset_type, window_size, vocab_dict = None):
+    def __init__(self, model_type, dataset_type, window_size, vocab_dict = None, data_percentage =0.1):
         self.lm_inputs = []
         self.lm_labels = []
         self.inputs = []
@@ -58,7 +58,10 @@ class AGNewsDataset(Dataset):
         #     self.inputs.append(tokenizer(self.dataset[idx]['text'].strip().split()))
         #     self.labels.append(self.dataset[idx]['label'])
         t = 0
+        stop_idx = len(self.dataset) * data_percentage
         for idx in tqdm(range(len(self.dataset))):
+            if idx >= stop_idx:
+                break
             self.lm_inputs.append(
                 tokenize(tokenizer, 'start ' + self.dataset[idx]['text'], model_type, window_size))
             if model_type == 'bert':
@@ -73,9 +76,9 @@ class AGNewsDataset(Dataset):
                 self.lm_labels.append(label_ids)
             self.inputs.append(tokenize(tokenizer, self.dataset[idx]['text'], model_type, window_size))
             self.labels.append(self.dataset[idx]['label'])
-#            if t == 100:
-#                break
-#            t += 1
+            # if t == 100:
+            #     break
+            # t += 1
         # print(type(self.lm_inputs))
         if model_type == 'bert':
             self.lm_inputs = torch.tensor(self.lm_inputs)

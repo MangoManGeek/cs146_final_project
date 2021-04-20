@@ -22,7 +22,6 @@ class Linear_Classifier(nn.Module):
         # TODO: initialize the vocab_size, rnn_size, embedding_size
         # self.vocab_size = vocab_size
         # self.embedding_size = embedding_size
-        self.num_layers = num_layers
         self.dropout_rate = 0.3
         self.linear1_out_size = 256
 
@@ -58,13 +57,11 @@ class Linear_Classifier(nn.Module):
         # make sure you use pack_padded_sequence and pad_padded_sequence to
         # reduce calculation
 
-        embedding_output = self.embeddings(inputs) # batch * window * embeddings
-        positional_embeddings = self.pos_encoder(embedding_output)
+        embedding_out  = self.embeddings(inputs).sum(dim=1) # batch * embeddings
 #        print(positional_embeddings.shape,"@@@@")
 #        transpose_tensor = torch.transpose(positional_embeddings, 0, 1)
 #        print(transpose_tensor.shape,"!!!!")
-        encoder_output = self.transformer_encoder(torch.transpose(positional_embeddings, 0, 1)).sum(dim=1)
-        linear_out = self.linear(encoder_output)
+        linear_out = self.linear(embedding_out)
         linear_out = self.gelu(linear_out)
         logist = self.output_layer(linear_out)
         return logist
