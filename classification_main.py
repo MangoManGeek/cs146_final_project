@@ -19,7 +19,7 @@ hyperparams = {
     "num_epochs": 1,
     "batch_size": 20,
     "learning_rate": 1e-5,
-    "data_percentage": 0.01,
+    "data_percentage": 0.5,
     "dataset_name": "ag_news",
     "window_size": 100
 }
