@@ -25,7 +25,7 @@ class LSTM_Classifier(nn.Module):
         # self.embedding_size = embedding_size
         self.num_layers = num_layers
         self.dropout_rate = 0.3
-        self.linear1_out_size = 128
+        self.linear1_out_size = 256
 
         # TODO: initialize embeddings, LSTM, and linear layers
         if embedder_type == 'bert':

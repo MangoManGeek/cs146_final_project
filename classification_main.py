@@ -16,10 +16,10 @@ from AGNewsDataset import *
 hyperparams = {
     "task_type": "classification",
     "rnn_size": 256,  # assuming encoder and decoder use the same rnn_size
-    "num_epochs": 3,
+    "num_epochs": 1,
     "batch_size": 20,
-    "learning_rate": 1e-4,
-    "data_percentage": 0.1,
+    "learning_rate": 1e-5,
+    "data_percentage": 0.01,
     "dataset_name": "ag_news",
     "window_size": 100
 }
