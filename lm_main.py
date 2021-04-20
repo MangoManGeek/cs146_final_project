@@ -6,6 +6,7 @@ import torch
 import numpy as np
 import argparse
 from tqdm import tqdm  # optional progress bar
+from ignite.metrics import Precision, Recall
 
 from lstm import *
 from AGNewsDataset import *
@@ -13,7 +14,7 @@ from AGNewsDataset import *
 # TODO: Set hyperparameters
 hyperparams = {
     "rnn_size": 500,  # assuming encoder and decoder use the same rnn_size
-    "num_epochs": 2,
+    "num_epochs": 1,
     "batch_size": 20,
     "learning_rate": 0.001,
     "window_size": 50
@@ -53,7 +54,7 @@ def train(model, train_loader, experiment, hyperparams):
                 optimizer.step()
 
 
-def test(model, test_loader, experiment, hyperparams, bpe):
+def test(model, test_loader, experiment, hyperparams):
     """
     Validates the model performance as LM on never-seen data.
     :param model: the trained model to use for prediction
@@ -68,6 +69,9 @@ def test(model, test_loader, experiment, hyperparams, bpe):
     word_count = 0
     total_correct = 0
     total_words = 0
+
+    # precision = Precision(average=False, is_multilabel=True)# , device = device)
+    # recall = Recall(average=False, is_multilabel=True)# , device = device)
 
     model = model.eval()
     with experiment.test():
@@ -93,11 +97,19 @@ def test(model, test_loader, experiment, hyperparams, bpe):
                 total_correct += batch_correct
                 total_words += batch_words
 
+                # predicted_ids = torch.argmax(prbs, dim=2)
+                # precision.update((predicted_ids, labels))
+                # recall.update((predicted_ids, labels))
+
         perplexity = torch.exp(total_loss / total_words)
         accuracy = total_correct / total_words
 
         perplexity = perplexity.item()
         # accuracy = accuracy.cpu()
+
+        # F1 = (precision * recall * 2 / (precision + recall)).mean()
+        # print(F1)
+
         print("total_correct: ", total_correct)
         print("total_words: ", total_words)
 
@@ -194,7 +206,7 @@ if __name__ == "__main__":
         train(model, train_loader, experiment, hyperparams)
     if args.test:
         print("running testing loop...")
-        test(model, test_dataset, experiment, hyperparams)
+        test(model, test_loader, experiment, hyperparams)
     if args.save:
         print("saving model...")
         torch.save(model.state_dict(), './model.pt')
