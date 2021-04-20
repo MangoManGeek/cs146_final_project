@@ -156,6 +156,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # TODO: Make sure you modify the `.comet.config` file
+    hyperparams["model_type"] = 'bert' if args.bert else "elmo"
     experiment = Experiment(log_code=False)
     experiment.log_parameters(hyperparams)
 
