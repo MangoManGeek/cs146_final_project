@@ -165,7 +165,7 @@ if __name__ == "__main__":
 
     # training_dataset = AGNewsDataset(embedder_type, 'train', hyperparams['window_size'])
     vocab_dict = dict()
-    training_dataset = AGNewsDataset(embedder_type, 'test', hyperparams['window_size'], vocab_dict = vocab_dict)
+    training_dataset = AGNewsDataset(embedder_type, 'train', hyperparams['window_size'], vocab_dict = vocab_dict)
     vocab_dict = training_dataset.vocab_dict
     testing_dataset = AGNewsDataset(embedder_type, 'test', hyperparams['window_size'], vocab_dict = vocab_dict)
     vocab_dict = testing_dataset.vocab_dict
