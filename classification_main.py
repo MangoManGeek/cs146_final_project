@@ -51,7 +51,7 @@ def train(model, train_loader, experiment, hyperparams):
 
                 inputs = inputs.to(device)
                 labels = labels.to(device)
-                lengths = lengths.to(device)
+                # lengths = lengths.to(device)
 
                 optimizer.zero_grad()
                 y_pred = model(inputs, lengths)
@@ -96,7 +96,7 @@ def test(model, test_loader, experiment, hyperparams):
 
                 inputs = inputs.to(device)
                 labels = labels.to(device)
-                lengths = lengths.to(device)
+                # lengths = lengths.to(device)
 
                 y_pred = model(inputs, lengths)
                 # loss = loss_fn(y_pred, labels)
