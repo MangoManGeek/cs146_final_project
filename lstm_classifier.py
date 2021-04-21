@@ -24,6 +24,7 @@ class LSTM_Classifier(nn.Module):
         self.hidden_size = rnn_size
         # self.embedding_size = embedding_size
         self.num_layers = num_layers
+        self.embedder_type = embedder_type
         self.dropout_rate = 0.3
         self.linear1_out_size = 256
 
@@ -50,7 +51,7 @@ class LSTM_Classifier(nn.Module):
         #self.hidden_in = torch.randn(self.num_layers, self.batch_size, self.hidden_size)
         #self.cell_in = torch.randn(self.num_layers, self.batch_size, self.hidden_size)
 
-    def forward(self, inputs):
+    def forward(self, inputs, lengths):
 
         """
         Runs the forward pass of the model.
@@ -65,11 +66,12 @@ class LSTM_Classifier(nn.Module):
         # reduce calculation
 
         in_embeddings = self.embeddings(inputs) # batch * window * embeddings
-        # packed_embeddings = torch.nn.utils.rnn.pack_padded_sequence(input = in_embeddings, 
-        #                                                             lengths = lengths, 
-        #                                                             batch_first = True,
-        #                                                             enforce_sorted=False)
-        packed_embeddings = in_embeddings
+        # print(lengths)
+        packed_embeddings = torch.nn.utils.rnn.pack_padded_sequence(input = in_embeddings, 
+                                                                    lengths = lengths, 
+                                                                    batch_first = True,
+                                                                    enforce_sorted=False)
+        # packed_embeddings = in_embeddings
         # print(packed_embeddings)
         lstm_out, (hn, cn) = self.lstm(input = packed_embeddings)       # lstm_out shape: batch * seq_length * embedding
         # unpacked_lstm_out, lens_unpacked = torch.nn.utils.rnn.pad_packed_sequence(sequence = lstm_out, 

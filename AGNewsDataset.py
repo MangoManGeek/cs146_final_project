@@ -23,6 +23,7 @@ class AGNewsDataset(Dataset):
         self.lm_labels = []
         self.inputs = []
         self.labels = []
+        self.lengths = []
         self.vocab_dict = vocab_dict if vocab_dict else dict()
         self.vocab_dict['*PAD*'] = 0
         self.vocab_dict['start'] = 1
@@ -62,6 +63,7 @@ class AGNewsDataset(Dataset):
         for idx in tqdm(range(len(self.dataset))):
             if idx >= stop_idx:
                 break
+            
             self.lm_inputs.append(
                 tokenize(tokenizer, 'start ' + self.dataset[idx]['text'], model_type, window_size))
             if model_type == 'bert':
@@ -76,6 +78,12 @@ class AGNewsDataset(Dataset):
                 self.lm_labels.append(label_ids)
             self.inputs.append(tokenize(tokenizer, self.dataset[idx]['text'], model_type, window_size))
             self.labels.append(self.dataset[idx]['label'])
+            # if model_type == 'bert':
+            #     self.lengths.append(tokenizer(s, padding = 'max_length', truncation = True, max_length = window_size, return_length=True)['length'])
+            # else:
+            #     self.lengths.append(len(self.dataset[idx]['text'].split()))
+            self.lengths.append(min(len(self.dataset[idx]['text'].split()), window_size))
+
             # if t == 100:
             #     break
             # t += 1
@@ -85,11 +93,13 @@ class AGNewsDataset(Dataset):
             self.lm_labels = torch.tensor(self.lm_labels)
             self.inputs = torch.tensor(self.inputs)
             self.labels = torch.tensor(self.labels)
+            self.lengths = torch.tensor(self.lengths)
         else:
             self.lm_inputs = torch.tensor(self.lm_inputs).to(torch.int64)
             self.lm_labels = torch.tensor(self.lm_labels).to(torch.int64)
             self.inputs = torch.tensor(self.inputs).to(torch.int64)
             self.labels = torch.tensor(self.labels).to(torch.int64)
+            self.lengths = torch.tensor(self.lengths).to(torch.int64)
 
 
     def __len__(self):
@@ -106,7 +116,8 @@ class AGNewsDataset(Dataset):
         'lm_input': self.lm_inputs[idx],
         'lm_label': self.lm_labels[idx],
         'input': self.inputs[idx],
-        'label': self.labels[idx]
+        'label': self.labels[idx],
+        'length': self.lengths[idx]
         }
         return item
 

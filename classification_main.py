@@ -19,7 +19,7 @@ hyperparams = {
     "num_epochs": 1,
     "batch_size": 20,
     "learning_rate": 1e-5,
-    "data_percentage": 0.5,
+    "data_percentage": 0.01,
     "dataset_name": "ag_news",
     "window_size": 100
 }
@@ -47,12 +47,14 @@ def train(model, train_loader, experiment, hyperparams):
             for batch in tqdm(train_loader):
                 inputs = batch['input']
                 labels = batch['label']
+                lengths = batch['length']
 
                 inputs = inputs.to(device)
                 labels = labels.to(device)
+                lengths = lengths.to(device)
 
                 optimizer.zero_grad()
-                y_pred = model(inputs)
+                y_pred = model(inputs, lengths)
                 # print(y_pred.shape)
                 # print(labels.shape)
                 loss = loss_fn(y_pred, labels)
@@ -89,12 +91,14 @@ def test(model, test_loader, experiment, hyperparams):
 
                 inputs = batch['input']
                 labels = batch['label']
+                lengths = batch['length']
                 # word_count = sum([len(arr) for arr in inputs])
 
                 inputs = inputs.to(device)
                 labels = labels.to(device)
+                lengths = lengths.to(device)
 
-                y_pred = model(inputs)
+                y_pred = model(inputs, lengths)
                 # loss = loss_fn(y_pred, labels)
 
                 # total_loss += loss
