@@ -29,14 +29,14 @@ class Elmo_Embedding_layer(nn.Module):
         # print(rv.shape)
         return rv
     
-elmo = Elmo_Embedding_layer()
-sentences = [['First', 'word', 'is', 'good', '.'], ['First', 'word', 'is', 'awesome', '.']]
-sentences_comp = [['First', 'bad', 'thing', 'is', 'love'], ['First', 'bad', 'thing', 'is', 'hate']]
-result = elmo.elmo(batch_to_ids(sentences))["elmo_representations"]
-result_comp = elmo.elmo(batch_to_ids(sentences_comp))["elmo_representations"][0]
-test = result_comp.clone().detach().sum(dim=1)
-print(test)
-print(test.shape)
+#elmo = Elmo_Embedding_layer()
+#sentences = [['First', 'word', 'is', 'good', '.'], ['First', 'word', 'is', 'awesome', '.']]
+#sentences_comp = [['First', 'bad', 'thing', 'is', 'love'], ['First', 'bad', 'thing', 'is', 'hate']]
+#result = elmo.elmo(batch_to_ids(sentences))["elmo_representations"]
+#result_comp = elmo.elmo(batch_to_ids(sentences_comp))["elmo_representations"][0]
+#test = result_comp.clone().detach().sum(dim=1)
+#print(test)
+#print(test.shape)
 #t = result[0].detach().numpy()
 #t0, t1 = t[0].flatten(), t[1].flatten()
 #t = result_comp[0].detach().numpy()
