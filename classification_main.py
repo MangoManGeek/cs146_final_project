@@ -37,7 +37,7 @@ def train(model, train_loader, experiment, hyperparams):
     :param bpe: is bpe dataset or not
     """
     # TODO: Define loss function and optimizer
-    loss_fn = nn.CrossEntropyLoss(ignore_index=0)
+    loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=hyperparams['learning_rate'])
 
     model = model.train()
@@ -70,7 +70,7 @@ def test(model, test_loader, experiment, hyperparams):
     :param bpe: is bpe dataset or not
     """
     # TODO: Define loss function, total loss, and total word count
-    loss_fn = nn.CrossEntropyLoss(ignore_index=0, reduction = "sum")
+    # loss_fn = nn.CrossEntropyLoss(ignore_index=0, reduction = "sum")
     
     batch_total = 0
     total_correct = 0
@@ -95,7 +95,7 @@ def test(model, test_loader, experiment, hyperparams):
                 labels = labels.to(device)
 
                 y_pred = model(inputs)
-                loss = loss_fn(y_pred, labels)
+                # loss = loss_fn(y_pred, labels)
 
                 # total_loss += loss
 
@@ -185,6 +185,7 @@ if __name__ == "__main__":
     training_dataset = AGNewsDataset(embedder_type, 'train', hyperparams['window_size'], vocab_dict = vocab_dict, data_percentage = hyperparams["data_percentage"], dataset_name = hyperparams["dataset_name"])
     vocab_dict = training_dataset.vocab_dict
     testing_dataset = AGNewsDataset(embedder_type, 'test', hyperparams['window_size'], vocab_dict = vocab_dict, data_percentage = 1.0, dataset_name = hyperparams["dataset_name"])
+    # testing_dataset = AGNewsDataset(embedder_type, 'test', hyperparams['window_size'], vocab_dict = vocab_dict, data_percentage = hyperparams["data_percentage"], dataset_name = hyperparams["dataset_name"])
     vocab_dict = testing_dataset.vocab_dict
     vocab_size = testing_dataset.vocab_size
     print("final vocab size: ", vocab_size)
